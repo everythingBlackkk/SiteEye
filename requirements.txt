@@ -1,0 +1,6 @@
+opencv-python
+pyfiglet
+colorama
+yagmail
+selenium
+Pillow
