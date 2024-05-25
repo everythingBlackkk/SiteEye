@@ -6,9 +6,10 @@ from colorama import Fore, init  # color text
 import yagmail  # send Gmail
 from selenium import webdriver  # Control Web App
 from selenium.common.exceptions import WebDriverException
-from PIL import Image  # To stitch images together
+from dotenv import load_dotenv  # Load .env variables
 
 init(autoreset=True)
+load_dotenv()
 
 text = """
                ..,,;;;;;;,,,,
@@ -27,21 +28,18 @@ print(Fore.LIGHTGREEN_EX + text)
 print(Fore.LIGHTYELLOW_EX + "    # Site Eye , Coded By Yassin Abd-elrazik ")
 print(Fore.LIGHTYELLOW_EX + "          GitHub : everythingBlackkk")
 
-# Function to take a full screenshot of the webpage
 def take_full_screenshot(driver, url, wait_time, screenshot_path):
     try:
         driver.get(url)
-        time.sleep(wait_time)  # Wait for the page to load completely
+        driver.refresh()
+        time.sleep(wait_time)
 
-        # Get the dimensions of the page
         total_width = driver.execute_script("return document.body.scrollWidth")
         total_height = driver.execute_script("return document.body.scrollHeight")
 
-        # Set the window size to the total width and height of the page
         driver.set_window_size(total_width, total_height)
-        time.sleep(wait_time)  # Give the browser some time to adjust the window size
+        time.sleep(wait_time)
 
-        # Take the screenshot
         screenshot_file = os.path.join(screenshot_path, "current_screenshot.png")
         success = driver.save_screenshot(screenshot_file)
         if success:
@@ -54,8 +52,7 @@ def take_full_screenshot(driver, url, wait_time, screenshot_path):
         print(Fore.RED + "Error: Failed to take screenshot:", e)
         return None
 
-# Function to compare two images and return similarity
-def compare_images(img1_path, img2_path):  # OpenCv and Sift
+def compare_images(img1_path, img2_path):
     try:
         img1 = cv2.imread(img1_path)
         img2 = cv2.imread(img2_path)
@@ -90,7 +87,6 @@ def compare_images(img1_path, img2_path):  # OpenCv and Sift
         print(Fore.RED + "Error: Failed to compare images:", e)
         return 0
 
-# Function to send email notification
 def send_email(subject, message, recipient_email, sender_email, sender_password):
     try:
         yag = yagmail.SMTP(sender_email, sender_password)
@@ -105,11 +101,17 @@ def send_email(subject, message, recipient_email, sender_email, sender_password)
 
 def main():
     try:
+        GMAIL_SENDER = os.getenv("GMAIL_SENDER")
+        API = os.getenv("API")
+        if GMAIL_SENDER is None or API is None:
+            print(Fore.RED + "Error: Missing environment variables.")
+            return
+
         website_link = input("[+] Enter the website link: ")
         wait_time = int(input("[+] Enter the number of seconds to wait: "))
         recipient_email = input("[+] Enter the recipient's email: ")
-        sender_email = input("[+] Enter your email: ")
-        sender_password = input("[+] Enter your password: ")
+        sender_email = GMAIL_SENDER
+        sender_password = API
 
         screenshot_path = "screenshots/"
         if not os.path.exists(screenshot_path):
@@ -127,6 +129,11 @@ def main():
             current_screenshot = take_full_screenshot(driver, website_link, wait_time, screenshot_path)
             if not current_screenshot:
                 continue
+
+            total_width = driver.execute_script("return document.body.scrollWidth")
+            total_height = driver.execute_script("return document.body.scrollHeight")
+            driver.set_window_size(total_width, total_height)
+            time.sleep(wait_time)
 
             if previous_screenshot:
                 print("Comparing screenshots...")
@@ -146,7 +153,7 @@ def main():
                 old_similarity = compare_images(current_screenshot, current_screenshot)
 
             previous_screenshot = current_screenshot
-            time.sleep(2)  # Wait 4 seconds before taking a new screenshot
+            time.sleep(2)
 
     except KeyboardInterrupt:
         print(Fore.LIGHTCYAN_EX + "Exiting...")

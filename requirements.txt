@@ -3,4 +3,4 @@ pyfiglet
 colorama
 yagmail
 selenium
-Pillow
+python-dotenv
