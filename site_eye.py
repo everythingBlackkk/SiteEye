@@ -21,7 +21,8 @@ text = """
         .   '';;;;;;;;;,;;;;@@@@@;;' ,.:;'
           ''..,,     ''''    '  .,;'
                ''''''::''''''''
-    """
+"""
+
 print(Fore.LIGHTGREEN_EX + text)
 print(Fore.LIGHTYELLOW_EX + "    # Site Eye , Coded By Yassin Abd-elrazik ")
 print(Fore.LIGHTYELLOW_EX + "          GitHub : everythingBlackkk")
@@ -54,6 +55,42 @@ def take_full_screenshot(driver, url, wait_time, screenshot_path):
         print(Fore.RED + "Error: Failed to take screenshot:", e)
         return None
 
+# Function to compare two images and return similarity
+def compare_images(img1_path, img2_path):  # OpenCv and Sift
+    try:
+        img1 = cv2.imread(img1_path)
+        img2 = cv2.imread(img2_path)
+
+        if img1 is None or img2 is None:
+            print(Fore.RED + "Error: One of the images could not be loaded.")
+            return 0
+
+        gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+        gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+
+        sift = cv2.SIFT_create()
+        kp1, des1 = sift.detectAndCompute(gray1, None)
+        kp2, des2 = sift.detectAndCompute(gray2, None)
+
+        bf = cv2.BFMatcher()
+        matches = bf.knnMatch(des1, des2, k=2)
+
+        good = []
+        for m, n in matches:
+            if m.distance < 0.7 * n.distance:
+                good.append(m)
+
+        match_count = len(good)
+
+        if match_count > 0:
+            similarity = match_count / max(len(kp1), len(kp2))
+            return similarity
+        else:
+            return 0
+    except Exception as e:
+        print(Fore.RED + "Error: Failed to compare images:", e)
+        return 0
+
 # Function to send email notification
 def send_email(subject, message, recipient_email, sender_email, sender_password):
     try:
@@ -69,12 +106,11 @@ def send_email(subject, message, recipient_email, sender_email, sender_password)
 
 def main():
     try:
-        sender_email = os.environ['SENDER_EMAIL']  # Use square brackets to access environment variables
-        api_key = os.environ['API_KEY']
-
         website_link = input("[+] Enter the website link: ")
         wait_time = int(input("[+] Enter the number of seconds to wait: "))
         recipient_email = input("[+] Enter the recipient's email: ")
+        sender_email = input("[+] Enter your email: ")
+        sender_password = input("[+] Enter your email password: ")
 
         screenshot_path = "screenshots/"
         if not os.path.exists(screenshot_path):
@@ -93,11 +129,12 @@ def main():
             if not current_screenshot:
                 continue
 
+            # Get the dimensions of the page and set the window size for each iteration
             total_width = driver.execute_script("return document.body.scrollWidth")
             total_height = driver.execute_script("return document.body.scrollHeight")
             driver.set_window_size(total_width, total_height)
-            time.sleep(wait_time)
-          
+            time.sleep(wait_time)  # Give the browser some time to adjust the window size
+
             if previous_screenshot:
                 print("Comparing screenshots...")
                 similarity = compare_images(previous_screenshot, current_screenshot)
