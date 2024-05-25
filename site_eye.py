@@ -6,6 +6,7 @@ from colorama import Fore, init  # color text
 import yagmail  # send Gmail
 from selenium import webdriver  # Control Web App
 from selenium.common.exceptions import WebDriverException
+from PIL import Image  # To stitch images together
 
 init(autoreset=True)
 
@@ -21,8 +22,7 @@ text = """
         .   '';;;;;;;;;,;;;;@@@@@;;' ,.:;'
           ''..,,     ''''    '  .,;'
                ''''''::''''''''
-"""
-
+    """
 print(Fore.LIGHTGREEN_EX + text)
 print(Fore.LIGHTYELLOW_EX + "    # Site Eye , Coded By Yassin Abd-elrazik ")
 print(Fore.LIGHTYELLOW_EX + "          GitHub : everythingBlackkk")
@@ -110,7 +110,7 @@ def main():
         wait_time = int(input("[+] Enter the number of seconds to wait: "))
         recipient_email = input("[+] Enter the recipient's email: ")
         sender_email = input("[+] Enter your email: ")
-        sender_password = input("[+] Enter your email password: ")
+        sender_password = input("[+] Enter your password: ")
 
         screenshot_path = "screenshots/"
         if not os.path.exists(screenshot_path):
@@ -128,12 +128,6 @@ def main():
             current_screenshot = take_full_screenshot(driver, website_link, wait_time, screenshot_path)
             if not current_screenshot:
                 continue
-
-            # Get the dimensions of the page and set the window size for each iteration
-            total_width = driver.execute_script("return document.body.scrollWidth")
-            total_height = driver.execute_script("return document.body.scrollHeight")
-            driver.set_window_size(total_width, total_height)
-            time.sleep(wait_time)  # Give the browser some time to adjust the window size
 
             if previous_screenshot:
                 print("Comparing screenshots...")
@@ -153,7 +147,7 @@ def main():
                 old_similarity = compare_images(current_screenshot, current_screenshot)
 
             previous_screenshot = current_screenshot
-            time.sleep(2)
+            time.sleep(2)  # Wait 4 seconds before taking a new screenshot
 
     except KeyboardInterrupt:
         print(Fore.LIGHTCYAN_EX + "Exiting...")
