@@ -1,0 +1,20 @@
+name: Send Email Notification
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  send_email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Send Email
+        env:
+          GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "Sending email from $GMAIL_SENDER"
+          python site_eye.py
