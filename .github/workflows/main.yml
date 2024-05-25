@@ -14,4 +14,4 @@ jobs:
           API_KEY: ${{ secrets.API }}
         run: |
           echo "Sending email from $GMAIL_SENDER"
-          python SiteEye/site_eye.py  
+          python /SiteEye/blob/main/site_eye.py
