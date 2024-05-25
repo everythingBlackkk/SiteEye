@@ -14,4 +14,4 @@ jobs:
           API_KEY: ${{ secrets.API }}
         run: |
           echo "Sending email from $GMAIL_SENDER"
-          python site_eye.py  # تعديل هنا ليكون اسم الملف هو site_eye.py
+          python site_eye/site_eye.py  
