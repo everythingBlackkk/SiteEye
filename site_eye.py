@@ -97,6 +97,7 @@ def main():
             total_height = driver.execute_script("return document.body.scrollHeight")
             driver.set_window_size(total_width, total_height)
             time.sleep(wait_time)
+          
             if previous_screenshot:
                 print("Comparing screenshots...")
                 similarity = compare_images(previous_screenshot, current_screenshot)
