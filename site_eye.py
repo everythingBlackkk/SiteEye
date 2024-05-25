@@ -6,10 +6,8 @@ from colorama import Fore, init  # color text
 import yagmail  # send Gmail
 from selenium import webdriver  # Control Web App
 from selenium.common.exceptions import WebDriverException
-from dotenv import load_dotenv  # Load .env variables
 
 init(autoreset=True)
-load_dotenv()
 
 text = """
                ..,,;;;;;;,,,,
@@ -101,8 +99,8 @@ def send_email(subject, message, recipient_email, sender_email, sender_password)
 
 def main():
     try:
-        GMAIL_SENDER = os.getenv("GMAIL_SENDER")
-        API = os.getenv("API")
+        GMAIL_SENDER = os.environ.get("GMAIL_SENDER")
+        API = os.environ.get("API")
         if GMAIL_SENDER is None or API is None:
             print(Fore.RED + "Error: Missing environment variables.")
             return
