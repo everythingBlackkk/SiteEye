@@ -99,8 +99,8 @@ def send_email(subject, message, recipient_email, sender_email, sender_password)
 
 def main():
     try:
-        sender_email = os.environ.get('SENDER_EMAIL')
-        sender_password = os.environ.get('SENDER_PASSWORD')
+        sender_email = os.environ('SENDER_EMAIL')
+        sender_password = os.environ('SENDER_PASSWORD')
         if GMAIL_SENDER is None or API is None:
             print(Fore.RED + "Error: Missing environment variables.")
             return
