@@ -11,6 +11,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # يجب أن يحتوي مشروعك على ملف requirements.txt يحتوي على تعريفات الحزم المطلوبة
+
       - name: Send Email
         env:
           GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
