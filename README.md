@@ -16,7 +16,7 @@ Site Eye is a tool designed to monitor changes in a web page's content by taking
 1. Clone the repository to your local machine:
 
     ```bash
-    git clone https://github.com/everythingBlackkk/Site-Eye.git
+    git clone https://github.com/everythingBlackkk/SiteEye.git
     ```
 
 2. Navigate to the project directory:
