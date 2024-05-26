@@ -109,6 +109,7 @@ def main():
         website_link = input("[+] Enter the website link: ")
         wait_time = int(input("[+] Enter the number of seconds to wait: "))
         recipient_email = input("[+] Enter the recipient's email: ")
+        print(Fore.LIGHTCYAN_EX + "WARNING!! In the first version of the tool, you need an email and a password to send you a notification from it.")
         sender_email = input("[+] Enter your email: ")
         sender_password = input("[+] Enter your password: ")
 
