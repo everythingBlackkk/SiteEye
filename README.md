@@ -1,5 +1,5 @@
 # Site Eye
-WARN!! # The tool is under development and you will need an email to send from it. This is the version for it and it is being developed Thanks.
+WARNING!! The tool is currently under development, and you will need an email to send from it. This version is specifically designed for that purpose and is currently being developed. Thank you.
 _____
 Site Eye is a tool designed to monitor changes in a web page's content by taking screenshots at regular intervals and comparing them to detect any differences. This tool can be useful for tracking updates or modifications on a website over time.
 
