@@ -22,7 +22,7 @@ Site Eye is a tool designed to monitor changes in a web page's content by taking
 2. Navigate to the project directory:
 
     ```bash
-    cd Site-Eye
+    cd SiteEye
     ```
 
 3. Install the required dependencies using pip:
@@ -35,10 +35,10 @@ Site Eye is a tool designed to monitor changes in a web page's content by taking
 
 ## Usage
 
-1. Run the `main.py` script to start monitoring a website:
+1. Run the `site_eye.py` script to start monitoring a website:
 
     ```bash
-    python main.py
+    python site_eye.py
     ```
 
 2. Follow the prompts to enter the website link, wait time between screenshots, recipient's email, your email, and your email password.
