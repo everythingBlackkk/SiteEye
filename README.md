@@ -45,6 +45,34 @@ Site Eye is a tool designed to monitor changes in a web page's content by taking
 
 3. Site Eye will continuously monitor the specified web page and send email alerts if any changes are detected.
 
+verview
+This guide will walk you through the process of generating a Google App Password. Google App Passwords are one-time passwords that can be used instead of your regular account password for specific apps or devices, providing an added layer of security.
+
+Prerequisites
+Before you begin, make sure you have the following:
+
+A Google account with two-step verification enabled
+Access to your Google account settings
+Steps to Get A Google App Password
+Sign in to your Google Account
+
+Go to Google Account and sign in with your credentials.
+Access App Passwords
+
+In the Security section, click on "App passwords" or visit Google App Passwords.
+Generate App Password
+
+Choose the app and device you want to generate the password for from the drop-down menus.
+Click on "Generate" or "Generate App Password."
+Use the App Password
+
+Copy the generated password.
+Paste it into the password field of the app or device where you want to use it.
+Important Notes
+App passwords are one-time passwords, meaning they can only be used for the specific app and device you generated them for.
+You can revoke or regenerate app passwords at any time from your Google Account settings.
+Conclusion
+By following these steps, you can easily generate a Google App Password and enhance the security of your account when using third-party apps or devices.
 ## Dependencies
 
 - Python 3.x
