@@ -1,5 +1,5 @@
 # Site Eye
-WARNING!! The tool is currently under development, and you will need an email to send from it. This version is specifically designed for that purpose and is currently being developed. Thank you.
+WARNING!! The tool is under trial now, but it works very well. You need an email and a password to send the message to alert you if the content changes. You can create a password for the tool through your account instead of using your original account password.
 _____
 Site Eye is a tool designed to monitor changes in a web page's content by taking screenshots at regular intervals and comparing them to detect any differences. This tool can be useful for tracking updates or modifications on a website over time.
 
