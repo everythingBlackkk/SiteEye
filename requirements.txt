@@ -4,3 +4,4 @@ colorama
 yagmail
 selenium
 python-dotenv
+pillow
