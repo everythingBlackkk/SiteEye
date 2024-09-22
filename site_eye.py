@@ -27,22 +27,21 @@ print(Fore.LIGHTGREEN_EX + text)
 print(Fore.LIGHTYELLOW_EX + "    # Site Eye , Coded By Yassin Abd-elrazik ")
 print(Fore.LIGHTYELLOW_EX + "          GitHub : everythingBlackkk")
 
-# Function to take a full screenshot of the webpage
+
 def take_full_screenshot(driver, url, wait_time, screenshot_path):
     try:
         driver.get(url)
         driver.refresh()
-        time.sleep(wait_time)  # Wait for the page to load completely
+        time.sleep(wait_time)  
 
-        # Get the dimensions of the page
         total_width = driver.execute_script("return document.body.scrollWidth")
         total_height = driver.execute_script("return document.body.scrollHeight")
 
-        # Set the window size to the total width and height of the page
+  
         driver.set_window_size(total_width, total_height)
-        time.sleep(wait_time)  # Give the browser some time to adjust the window size
+        time.sleep(wait_time)  
 
-        # Take the screenshot
+        
         screenshot_file = os.path.join(screenshot_path, "current_screenshot.png")
         success = driver.save_screenshot(screenshot_file)
         if success:
@@ -55,8 +54,8 @@ def take_full_screenshot(driver, url, wait_time, screenshot_path):
         print(Fore.RED + "Error: Failed to take screenshot:", e)
         return None
 
-# Function to compare two images and return similarity
-def compare_images(img1_path, img2_path):  # OpenCv and Sift
+
+def compare_images(img1_path, img2_path): 
     try:
         img1 = cv2.imread(img1_path)
         img2 = cv2.imread(img2_path)
