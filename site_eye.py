@@ -1,12 +1,12 @@
-import os  # Control in OS like Make Dir
-import cv2  # OpenCv
-import time  # Stop Tool in some time
-import pyfiglet  # Create Ascii Text
-from colorama import Fore, init  # color text
-import yagmail  # send Gmail
-from selenium import webdriver  # Control Web App
+import os  
+import cv2
+import time 
+import pyfiglet
+from colorama import Fore, init  
+import yagmail  
+from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-from PIL import Image  # To stitch images together
+from PIL import Image 
 
 init(autoreset=True)
 
