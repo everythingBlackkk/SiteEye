@@ -1,16 +1,99 @@
-import os  
+import os
 import cv2
-import time 
-import pyfiglet
-from colorama import Fore, init  
-import yagmail  
+import time
+import hashlib
+from colorama import Fore, init
 from selenium import webdriver
-from selenium.common.exceptions import WebDriverException
-from PIL import Image 
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from playsound import playsound
 
 init(autoreset=True)
 
-text = """
+class SiteMonitor:
+    def __init__(self, url, wait_time=5):
+        self.url = url
+        self.wait_time = wait_time
+        self.screenshot_path = "screenshots/"
+        os.makedirs(self.screenshot_path, exist_ok=True)
+        
+        # Chrome settings
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        
+        # Install and run Chrome
+        service = Service(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    def take_full_screenshot(self):
+        try:
+            self.driver.get(self.url)
+            self.driver.refresh()
+            time.sleep(self.wait_time)
+
+            screenshot_file = os.path.join(self.screenshot_path, f"screenshot_{int(time.time())}.png")
+            success = self.driver.save_screenshot(screenshot_file)
+            
+            return screenshot_file if success else None
+        except Exception as e:
+            print(Fore.RED + f"Error taking screenshot: {e}")
+            return None
+
+    def compare_images(self, img1_path, img2_path):
+        try:
+            if not os.path.exists(img1_path) or not os.path.exists(img2_path):
+                print(Fore.RED + "Error: One of the images does not exist")
+                return 0
+
+            img1 = cv2.imread(img1_path, cv2.IMREAD_GRAYSCALE)
+            img2 = cv2.imread(img2_path, cv2.IMREAD_GRAYSCALE)
+
+            if img1 is None or img2 is None:
+                print(Fore.RED + "Error: Failed to load images")
+                return 0
+
+            diff = cv2.absdiff(img1, img2)
+            diff_percentage = (cv2.countNonZero(diff) * 100) / diff.size
+            
+            return diff_percentage
+        except Exception as e:
+            print(Fore.RED + f"Error comparing images: {e}")
+            return 0
+
+    def monitor_site(self, interval=60, diff_threshold=0.01):
+        previous_screenshot = None
+        
+        try:
+            while True:
+                current_screenshot = self.take_full_screenshot()
+                if not current_screenshot:
+                    continue
+
+                if previous_screenshot:
+                    diff_percentage = self.compare_images(previous_screenshot, current_screenshot)
+
+                    if diff_percentage > diff_threshold:
+                        print(Fore.RED + f"[!] Change detected! Difference: {diff_percentage:.2f}%")
+                        playsound("alert.mp3")
+                    else:
+                        print(Fore.GREEN + f"[+] No significant changes. Difference: {diff_percentage:.2f}%")
+                else:
+                    print(Fore.YELLOW + ">> First screenshot captured!")
+                
+                previous_screenshot = current_screenshot
+                time.sleep(interval)
+        
+        except KeyboardInterrupt:
+            print(Fore.LIGHTCYAN_EX + "Closing...")
+        finally:
+            self.driver.quit()
+
+def main():
+    print(Fore.LIGHTGREEN_EX + """
                ..,,;;;;;;,,,,
        .,;'';;,..,;;;,,,,,.''';;,..
     ,,''                    '';;;;,;''
@@ -22,138 +105,14 @@ text = """
         .   '';;;;;;;;;,;;;;@@@@@;;' ,.:;'
           ''..,,     ''''    '  .,;'
                ''''''::''''''''
-    """
-print(Fore.LIGHTGREEN_EX + text)
-print(Fore.LIGHTYELLOW_EX + "    # Site Eye , Coded By Yassin Abd-elrazik ")
-print(Fore.LIGHTYELLOW_EX + "          GitHub : everythingBlackkk")
+    """)
+    
+    website_link = input("[+] Enter website URL: ")
+    wait_time = int(input("[+] Enter wait time in seconds: "))
+    interval = int(input("[+] Enter monitoring interval in seconds: "))
 
-
-def take_full_screenshot(driver, url, wait_time, screenshot_path):
-    try:
-        driver.get(url)
-        driver.refresh()
-        time.sleep(wait_time)  
-
-        total_width = driver.execute_script("return document.body.scrollWidth")
-        total_height = driver.execute_script("return document.body.scrollHeight")
-
-  
-        driver.set_window_size(total_width, total_height)
-        time.sleep(wait_time)  
-
-        
-        screenshot_file = os.path.join(screenshot_path, "current_screenshot.png")
-        success = driver.save_screenshot(screenshot_file)
-        if success:
-            print(Fore.GREEN + "Screenshot taken successfully!")
-            return screenshot_file
-        else:
-            print(Fore.RED + "Error: Failed to save screenshot.")
-            return None
-    except WebDriverException as e:
-        print(Fore.RED + "Error: Failed to take screenshot:", e)
-        return None
-
-
-def compare_images(img1_path, img2_path): 
-    try:
-        img1 = cv2.imread(img1_path)
-        img2 = cv2.imread(img2_path)
-
-        if img1 is None or img2 is None:
-            print(Fore.RED + "Error: One of the images could not be loaded.")
-            return 0
-
-        gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-        gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-
-        sift = cv2.SIFT_create()
-        kp1, des1 = sift.detectAndCompute(gray1, None)
-        kp2, des2 = sift.detectAndCompute(gray2, None)
-
-        bf = cv2.BFMatcher()
-        matches = bf.knnMatch(des1, des2, k=2)
-
-        good = []
-        for m, n in matches:
-            if m.distance < 0.7 * n.distance:
-                good.append(m)
-
-        match_count = len(good)
-
-        if match_count > 0:
-            similarity = match_count / max(len(kp1), len(kp2))
-            return similarity
-        else:
-            return 0
-    except Exception as e:
-        print(Fore.RED + "Error: Failed to compare images:", e)
-        return 0
-
-# Function to send email notification
-def send_email(subject, message, recipient_email, sender_email, sender_password):
-    try:
-        yag = yagmail.SMTP(sender_email, sender_password)
-        yag.send(
-            to=recipient_email,
-            subject=subject,
-            contents=message
-        )
-        print(Fore.GREEN + "Email sent successfully!")
-    except Exception as e:
-        print(Fore.RED + "Error: Failed to send email:", e)
-
-def main():
-    try:
-        website_link = input("[+] Enter the website link: ")
-        wait_time = int(input("[+] Enter the number of seconds to wait: "))
-        recipient_email = input("[+] Enter the recipient's email: ")
-        print(Fore.LIGHTCYAN_EX + "WARNING!! In the first version of the tool, you need an email and a password to send you a notification from it.")
-        sender_email = input("[+] Enter your email: ")
-        sender_password = input("[+] Enter your password: ")
-
-        screenshot_path = "screenshots/"
-        if not os.path.exists(screenshot_path):
-            os.makedirs(screenshot_path)
-
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--window-size=1920,1080")
-        driver = webdriver.Chrome(options=options)
-
-        previous_screenshot = None
-        old_similarity = 0
-
-        while True:
-            current_screenshot = take_full_screenshot(driver, website_link, wait_time, screenshot_path)
-            if not current_screenshot:
-                continue
-
-            if previous_screenshot:
-                print("Comparing screenshots...")
-                similarity = compare_images(previous_screenshot, current_screenshot)
-                print(Fore.GREEN + "Similarity is:", similarity)
-                
-                if similarity != old_similarity:
-                    print(Fore.RED + "Changes detected! Similarity:", similarity)
-                    ascii_art_2 = pyfiglet.figlet_format("Alert!!!")
-                    print(Fore.RED + ascii_art_2)
-                    send_email("Hello From Site Eye! The Content Has Changed", 
-                               "The content of the webpage has changed.", 
-                               recipient_email, sender_email, sender_password)
-                    old_similarity = similarity
-            else:
-                print("Initial screenshot captured.")
-                old_similarity = compare_images(current_screenshot, current_screenshot)
-
-            previous_screenshot = current_screenshot
-            time.sleep(2)  # Wait 4 seconds before taking a new screenshot
-
-    except KeyboardInterrupt:
-        print(Fore.LIGHTCYAN_EX + "Exiting...")
-
-    finally:
-        driver.quit()
+    monitor = SiteMonitor(website_link, wait_time)
+    monitor.monitor_site(interval)
 
 if __name__ == "__main__":
     main()
