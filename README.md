@@ -1,71 +1,101 @@
-# Site Eye
-WARNING!! The tool is under trial now, but it works very well. You need an email and a password to send the message to alert you if the content changes. You can create a password for the tool through your account instead of using your original account password.
-_____
-Site Eye is a tool designed to monitor changes in a web page's content by taking screenshots at regular intervals and comparing them to detect any differences. This tool can be useful for tracking updates or modifications on a website over time.
+# SiteEye
+
+A visual website monitoring tool that detects and alerts you when changes occur on a webpage.
+
+## Overview
+
+SiteEye is a powerful Python-based tool designed to monitor websites by capturing periodic screenshots and detecting visual changes. When significant changes are detected on the monitored website, SiteEye alerts the user with both visual and audio notifications.
 
 ## Features
 
-- Takes full screenshots of a specified web page.
-- Compares current and previous screenshots to identify changes in content.
-- Sends email notifications when changes are detected.
-- Utilizes OpenCV for image comparison using SIFT (Scale-Invariant Feature Transform) algorithm.
-- Supports Chrome browser for headless operation.
+- Automated screenshot capture of websites at regular intervals
+- Visual comparison to detect changes between screenshots
+- Customizable sensitivity threshold for change detection
+- Audio alerts when significant changes are detected
+- Headless Chrome browser integration for reliable screenshot capture
+- Color-coded console output for easy monitoring status recognition
+
+## Requirements
+
+- Python 3.6+
+- Required Python packages:
+  - opencv-python (cv2)
+  - selenium
+  - webdriver-manager
+  - colorama
+  - playsound
+  - Chrome browser installed on your system
 
 ## Installation
 
-1. Clone the repository to your local machine:
+1. Clone the repository:
+```bash
+git clone https://github.com/everythingBlackkk/SiteEye.git
+cd SiteEye
+```
 
-    ```bash
-    git clone https://github.com/everythingBlackkk/SiteEye.git
-    ```
+2. Install the required dependencies:
+```bash
+pip install selenium webdriver-manager colorama opencv-python playsound
+```
 
-2. Navigate to the project directory:
-
-    ```bash
-    cd SiteEye
-    ```
-
-3. Install the required dependencies using pip:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4. Ensure you have Chrome browser installed on your system.
+3. Make sure you have Google Chrome installed on your system, as the tool uses Chrome to capture screenshots.
 
 ## Usage
 
-1. Run the `site_eye.py` script to start monitoring a website:
+Run the script from the command line:
 
-    ```bash
-    python site_eye.py
-    ```
+```bash
+python site_eye.py
+```
 
-2. Follow the prompts to enter the website link, wait time between screenshots, recipient's email, your email, and your email password.
+You will be prompted to enter:
+1. The website URL you want to monitor
+2. The wait time in seconds (how long to wait after page load before taking a screenshot)
+3. The monitoring interval in seconds (how frequently to check for changes)
 
-3. Site Eye will continuously monitor the specified web page and send email alerts if any changes are detected.
+## How It Works
 
+1. SiteEye launches a headless Chrome browser to capture full-page screenshots
+2. Screenshots are saved in a `screenshots` directory
+3. Each new screenshot is compared with the previous one using OpenCV
+4. If the difference exceeds the threshold (default 0.01%), an alert is triggered
+5. The tool continues monitoring until interrupted with Ctrl+C
 
-## Dependencies
+## Important Note
 
-- Python 3.x
-- OpenCV (cv2)
-- pyfiglet
-- colorama
-- yagmail
-- selenium
-- Pillow (PIL)
+⚠️ **Please ensure that the `alert.mp3` file is present in the same directory as the script.**
 
-## Notes
+If this file is missing, the audio alert feature will not work properly. The audio file is used to alert you when changes are detected on the monitored website.
 
-- Make sure to configure your email settings correctly to enable email notifications.
-- Site Eye uses the SIFT algorithm for image comparison, which requires OpenCV installation with non-free modules enabled.
+## Customization
+
+You can modify the following parameters in the code:
+- `diff_threshold`: Change detection sensitivity (default: 0.01%)
+- Chrome options: Add or modify browser settings for screenshot capture
+- Screenshot resolution: Change the window size in Chrome options
+
+## Troubleshooting
+
+If you encounter issues:
+
+1. Make sure Chrome is installed and accessible
+2. Check that all dependencies are correctly installed
+3. Verify the `alert.mp3` file exists in the script directory
+4. For websites that load dynamically, try increasing the wait time
 
 ## Contributing
 
-Contributions to enhance or add new features to Site Eye are welcome! Please fork the repository, make your changes, and submit a pull request.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
+## Author
+
+everythingBlackkk
+
+## Repository
+
+https://github.com/everythingBlackkk/SiteEye
